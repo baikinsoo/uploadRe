@@ -1,5 +1,7 @@
 package hello.uploadRe.controller;
 
+import hello.uploadRe.service.S3UploadService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -16,7 +18,10 @@ import java.io.IOException;
 @Slf4j
 @Controller
 @RequestMapping("/spring")
+@RequiredArgsConstructor
 public class SpringUploadController {
+
+    private final S3UploadService s3UploadService;
 
     @Value("${file.dir}")
     private String fileDir;
@@ -32,6 +37,8 @@ public class SpringUploadController {
         log.info("request={}", request);
         log.info("itemName={}", itemName);
         log.info("multipartFile={}", file);
+        s3UploadService.saveFile(file);
+
 
         if (!file.isEmpty()) {
             String fullPath = fileDir + file.getOriginalFilename();

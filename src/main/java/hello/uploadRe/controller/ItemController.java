@@ -4,6 +4,7 @@ import hello.uploadRe.domain.Item;
 import hello.uploadRe.domain.ItemRepository;
 import hello.uploadRe.domain.UploadFile;
 import hello.uploadRe.file.FileStore;
+import hello.uploadRe.service.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -29,6 +30,7 @@ public class ItemController {
 
     private final ItemRepository itemRepository;
     private final FileStore fileStore;
+    private final S3UploadService s3UploadService;
 
     @GetMapping("/items/new")
     public String newItem(@ModelAttribute ItemForm form) {
@@ -37,6 +39,8 @@ public class ItemController {
 
     @PostMapping("/items/new")
     public String saveItem(@ModelAttribute ItemForm form, RedirectAttributes redirectAttributes) throws IOException {
+
+        String s = s3UploadService.saveFile(form.getAttachFile());
         UploadFile attachFile = fileStore.storeFile(form.getAttachFile());
         List<UploadFile> storeImageFiles = fileStore.storeFiles(form.getImageFiles());
 
@@ -45,6 +49,7 @@ public class ItemController {
         item.setItemName(form.getItemName());
         item.setAttachFile(attachFile);
         item.setImageFiles(storeImageFiles);
+        item.setAWSUrl(s);
         itemRepository.save(item);
 
         redirectAttributes.addAttribute("itemId", item.getId());

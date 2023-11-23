@@ -1,0 +1,19 @@
+logging:
+  level:
+    org:
+      apache:
+        coyote:
+          http11: debug
+
+file:
+  dir: D:/file/
+
+cloud:
+  aws:
+    s3:
+      bucket: spring-bucket-bis
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: AKIAWEAMPDQHPEFNKQS2
+      secretKey: 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
